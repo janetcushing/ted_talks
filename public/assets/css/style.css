@@ -1,0 +1,126 @@
+/* css styles */
+
+.jumbotron {
+    font-family: 'Libre Franklin', Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    padding: 2rem 1rem;
+}
+
+.display-3 {
+    font-size: 3.5rem;
+}
+
+.lead {
+    font-size: 16px;
+    color: blue;
+    font-style: italic;
+    margin-bottom: 0px;
+}
+
+#displayImg {
+    height: 260px;
+    width: 260px;
+}
+
+.begin {
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 0px;
+}
+
+.inProgress {
+    font-weight: none;
+    font-size: 16px;
+    color: #e9ecef;
+}
+
+.col-md-4, .col-md-6 {
+    width: auto;
+    margin: 10px 20px 10px 20px;
+    padding: 0px 0px 0px 40px;
+}
+
+#displayWord,
+#lettersUsed {
+    font-family: 'Libre Baskerville', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+footer {
+    clear: both;
+    background-color: #e9ecef;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+
+/* 
+/* MEDIA TAGS */
+
+@media screen and (max-width: 980px) {
+    .display-3 {
+        font-size: 2.9rem;
+    }
+    .col-md-4, .col-md-5 {
+        margin: 8px 15px 0px 15px;
+        padding: 0px 30px 0px 30px;
+    }
+    .lead {
+        font-size: 15px;
+    }
+    .begin {
+        font-size: 20px;
+    }
+    .inProgress {
+        font-size: 14px;
+    }
+    #displayImg {
+        height: 200px;
+        width: 200px;
+    }
+    footer {
+        font-size: 11px;
+        padding: 10px;
+        margin-top: 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .display-3 {
+        font-size: 2.4rem;
+    }
+    .lead {
+        font-size: 14px;
+    }
+    .begin {
+        font-size: 18px;
+    }
+    .inProgress {
+        font-size: 12px;
+    }
+    footer {
+        font-size: 10px;
+        padding: 8px;
+        margin-top: 10px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .display-3 {
+        font-size: 1.5rem;
+    }
+    .lead {
+        font-size: 13px;
+    }
+    .begin {
+        font-size: 16px;
+    }
+    footer {
+        font-size: 10px;
+        padding: 5px;
+        margin-top: 10px;
+    }
+}

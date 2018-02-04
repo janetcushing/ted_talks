@@ -4,7 +4,6 @@ var mongojs = require("mongojs");
 // Require request and cheerio. This makes the scraping possible
 var request = require("request");
 var cheerio = require("cheerio");
-var logger = require("morgan");
 
 //
 var bodyParser = require("body-parser");
@@ -15,7 +14,7 @@ var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
-app.use(logger("dev"));
+
 // Sets up the Express app to handle data parsing
 app.use(bodyParser.urlencoded({
   extended: false
@@ -32,23 +31,27 @@ app.engine("handlebars", exphbs({
 app.set("view engine", "handlebars");
 app.set('views', path.join(__dirname, "views"));
 
+// var db = require("./models/tedtalk");
+
 // Our newest addition to the dependency family
 var mongoose = require("mongoose");
-
+var Mockgoose = require('mockgoose').Mockgoose;
+var mockgoose = new Mockgoose(mongoose);
 
 // Requiring the `Example` model for accessing the `examples` collection
-// var db = require("./models");
 var Articles = require("./models/articles.js");
 var SavedArticles = require("./models/savedArticles.js");
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
+
+mockgoose.prepareStorage().then(function () {
   // mongoose connection
   mongoose.Promise = Promise;
   mongoose.connect("mongodb://localhost/tedtalks", {
-    // useMongoClient: true
+    useMongoClient: true
   });
-
+});
 
 // Database configuration
 // var databaseUrl = "ted_talks";
