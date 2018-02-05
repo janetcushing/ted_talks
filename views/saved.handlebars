@@ -1,102 +1,107 @@
-<link rel="stylesheet" href="/assets/css/style.css"> {{!--
-<nav>
-    <div class="nav-wrapper">
-
-        <a href="/">
-            <img src="../assets/images/karmalogowhite.png" width="5%">
-        </a>
-        <ul class="right">
-            <li>
-                <a href="../home">Ted Talk Scraper</a>
-            </li>
-            <li>
-                <a href="../home">Home</a>
-            </li>
-            <li>
-                <a href="../saved">Saved Articles</a>
-            </li>
-            {{!--
-            <li> --}} {{!--
-                <a href="../" class="btn signout">Sign Out</a> --}} {{!-- </li> --}}
-        </ul>
-    </div>
-</nav> --}}
-
-<main>
-    <div class="container">
-        <div class="header clearfix">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active">
-                        <a href="../home">Ted Talk Scraper</a>
+<link rel="stylesheet" href="/assets/css/style.css">
+<div class="container">
+    <div class="row">
+        <div class="header">
+            <div class="col-md-12">
+                <nav>
+                    <button id="logoBtn" class="btn btn-primary btn-lg">
+                        <a href="./home"></a>Ted Talk Scraper
+                    </button>
+                    <button id="homeBtn" class="btn btn-primary btn-lg">
+                        <a href="./home"></a>Home
+                    </button>
+                    <button id="savedBtn" class="btn btn-primary btn-lg">
+                        <a href="./saved"></a>Saved Articles</button>
+                    <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Srape New Articles</button>
                     </li>
-                    <li role="presentation">
-                        <a href="../home">Home</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="../saved">Saved Articles</a>></li>
-                </ul>
-            </nav>
-            <h3 class="text-muted">Project name</h3>
-        </div>
-        <div class="jumbotron">
-            <h1>Saved ARTICLES</h1>
-            <p>...</p>
-            <img src="/assets/images/ted-talks.png" width="90%"> {{!--
-            <p>
-                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-            </p> --}}
+                </nav>
+            </div>
         </div>
     </div>
-    <div class="container">
+    <div class="jumbotron">
+        <h1>Ted Talk Scraper</h1>
+        <p>...</p>
+        <img src="/assets/images/ted-talks.png" width="90%">
+    </div>
+</div>
+<div class="container">
+    <div class="row" id="article-list">
+        {{!--
+        <div class="col s5">
+            <img src="/assets/images/ted-talks.png" width="90%">
+        </div> --}}
+        <div class="col s6">
+            <h3 class="saveddeet">Saved Ted Talks</h3>
+            <ul>
+                <lh id="saveddetail">
+                    <li class="saved-detail">
 
-        <div class="row" id="article-list">
-            {{!--
-            <div class="col s5">
-                <img src="/assets/images/ted-talks.png" width="90%">
-            </div> --}}
-            <div class="col s6">
-                <h3 class="saveddeet">Saved Ted Talks</h3>
-                <ul>
-                    <lh id="saveddetail">
-                        <li class="saved-detail">
+                        <span>
+                            <p id="title" value={{this.title}} class="label2">Title: </p>
+                            <p>{{this.title}}</p>
+                        </span>
+                        <span>
+                            <p id="link" value={{this.link}} class="label2">Link: </p>
+                            <p>{{this.link}}</p>
+                        </span>
+                        <span>
+                            <p id="speaker" value={{this.speaker}} class="label2">Speaker: </p>
+                            <p>{{this.speaker}}</p>
+                        </span>
+                        <span>
+                            <p id="date_posted" value={{this.date_posted}} class="label2">Date Posted: </p>
+                            <p>{{this.date_posted}}</p>
+                        </span>
+                        <span>
+                            <p id="classification" value={{this.classification}} class="label2">Classification: </p>
+                            <p>{{this.classification}}</p>
+                        </span>
 
-                            <span>
-                                <p id="title" value={{this.title}} class="label2">Title: </p>
-                                <p>{{this.title}}</p>
-                            </span>
-                            <span>
-                                <p id="link" value={{this.link}} class="label2">Link: </p>
-                                <p>{{this.link}}</p>
-                            </span>
-                            <span>
-                                <p id="speaker" value={{this.speaker}} class="label2">Speaker: </p>
-                                <p>{{this.speaker}}</p>
-                            </span>
-                            <span>
-                                <p id="date_posted" value={{this.date_posted}} class="label2">Date Posted: </p>
-                                <p>{{this.date_posted}}</p>
-                            </span>
-                            <span>
-                                <p id="classification" value={{this.classification}} class="label2">Classification: </p>
-                                <p>{{this.classification}}</p>
-                            </span>
-
-                            <p class="hideText">
-                                <p id="object_id" value={{this._id}} class="label2">ID: </p>
-                                <p>{{this._id}}</p>
-                            </p>
+                        <p class="hideText">
+                            <p id="object_id" value={{this._id}} class="label2">ID: </p>
+                            <p>{{this._id}}</p>
+                        </p>
+                        <button id="addanoteBtn" class="btn btn-lg btn-success" type="submit" name="action" data-id={{this._id}}>Add a Note
+                        </button>
+                        <button id="deleteBtn" class="btn btn-lg btn-success" type="submit" name="action" data-id={{this.id}}>Delete this article from Saved</button>
+                        </button>
+                    </li>
+                    <br>
+                </lh>
+            </ul>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title/Link</th>
+                        <th>Speaker</th>
+                        <th>Classification</th>
+                        <th>Date Posted</th>
+                        <th>Save?</th>
+                    </tr>
+                </thead>
+                <tbody {{#each scrapedArticles}}>
+                    <tr>
+                        {{!--
+                        <th scope="row">1</th> --}}
+                        <td>
+                            <a href="https://www.ted.com{{this.link}}">{{this.title}}</a>
+                        </td>
+                        <td>{{this.speaker}}</td>
+                        <td>{{this.classification}}</td>
+                        <td>{{this.date_posted}}</td>
+                        <td>
                             <button id="addanoteBtn" class="btn btn-lg btn-success" type="submit" name="action" data-id={{this._id}}>Add a Note
                             </button>
                             <button id="deleteBtn" class="btn btn-lg btn-success" type="submit" name="action" data-id={{this.id}}>Delete this article from Saved</button>
                             </button>
-                        </li>
-                        <br>
-                    </lh>
-                </ul>
-            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                {{/each}}
+            </table>
         </div>
     </div>
+</div>
 
 </main>
 <div class="container">
@@ -107,7 +112,9 @@
                 <p>TED is a nonpartisan nonprofit devoted to spreading ideas, usually in the form of short, powerful talks.
                     TED began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers
                     almost all topics — from science to business to global issues — in more than 110 languages. Meanwhile,
-                    independently run TEDx events help share ideas in communities around the world.</p>¸
+                    independently run TEDx events help share ideas in communities around the world. Ted Talks:
+                    <a href="https://www.ted.com">https://www.ted.com</a>
+                </p>¸
                 </br>
                 </br>© 2018 Copyright
                 <a href="https://github.com/janetcushing">Janet Cushing</a>

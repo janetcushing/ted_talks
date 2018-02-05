@@ -33,8 +33,9 @@
     <div class="container">
         <div class="row" id="article-list">
             <div class="col-md-12">
-                {{!-- <h3 class="saveddeet">Saved Ted Talks</h3> --}}
-                {{!-- <ul>
+                {{!--
+                <h3 class="saveddeet">Saved Ted Talks</h3> --}} {{!--
+                <ul>
                     <lh {{#each scrapedArticles}}>
                         <li id={{this._id}} class="articles">
 
@@ -69,29 +70,35 @@
                     </lh>
                     {{/each}}
                 </ul> --}}
- <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Title/Link</th>
-      <th>Speaker</th>
-      <th>Classification</th>
-      <th>Date Posted</th>
-        <th>Save?</th>
-    </tr>
-  </thead>
-  <tbody {{#each scrapedArticles}}>
-    <tr>
-      {{!-- <th scope="row">1</th> --}}
-      <td><a href="https://www.ted.com{{this.link}}">{{this.title}}</a></td>
-      <td>{{this.speaker}}</td>
-      <td>{{this.classification}}</td>
-       <td>{{this.date_posted}}</td>
-        <td> <button onclick="saveArticle()" class="saveBtn btn btn-lg btn-success" type="submit" name="action" data-id={{this._id}}>Save This Talk
-                            </button></td>
-    </tr>
-  </tbody>
-  {{/each}}
-</table>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title/Link</th>
+                            <th>Speaker</th>
+                            <th>Classification</th>
+                            <th>Date Posted</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody {{#each scrapedArticles}}>
+                        <tr>
+                            {{!--
+                            <th scope="row">1</th> --}}
+                            <td>
+                                <a href="https://www.ted.com{{this.link}}">{{this.title}}</a>
+                            </td>
+                            <td>{{this.speaker}}</td>
+                            <td>{{this.classification}}</td>
+                            <td>{{this.date_posted}}</td>
+                            <td>
+                                <button onclick="saveArticle()" class="saveBtn btn btn-lg btn-success" type="submit" name="action"
+                                    data-id={{this._id}}>Save This Talk
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {{/each}}
+                </table>
             </div>
         </div>
     </div>
@@ -105,8 +112,9 @@
                 <p>TED is a nonpartisan nonprofit devoted to spreading ideas, usually in the form of short, powerful talks.
                     TED began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers
                     almost all topics — from science to business to global issues — in more than 110 languages. Meanwhile,
-                    independently run TEDx events help share ideas in communities around the world.
-                    Ted Talks: <a href="https://www.ted.com">https://www.ted.com</a></p>¸
+                    independently run TEDx events help share ideas in communities around the world. Ted Talks:
+                    <a href="https://www.ted.com">https://www.ted.com</a>
+                </p>¸
                 </br>
                 </br>© 2018 Copyright
                 <a href="https://github.com/janetcushing">Janet Cushing</a>
