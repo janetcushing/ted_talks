@@ -1,3 +1,5 @@
+
+
 // Dependencies
 var express = require("express");
 var mongojs = require("mongojs");
@@ -39,7 +41,7 @@ var mongoose = require("mongoose");
 // Requiring the `Example` model for accessing the `examples` collection
 // var db = require("./models");
 var Articles = require("./models/articles.js");
-var SavedArticles = require("./models/savedArticles.js");
+// var SavedArticles = require("./models/savedArticles.js");
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
@@ -73,6 +75,7 @@ var SavedArticles = require("./models/savedArticles.js");
 
 var routes = require("./controller/controller.js");
 app.use("/", routes);
+
 
 // Listen on port 3000
 app.listen(PORT, function () {

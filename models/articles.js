@@ -27,7 +27,7 @@ var ArticlesSchema = new Schema({
   title: {
     type: String,
     trim: true,
-    required: "String is Required",
+    required: "title is Required",
     validate: [
       // Function takes in the new `longstring` value to be saved as an argument
       function(input) {
@@ -41,22 +41,21 @@ var ArticlesSchema = new Schema({
   link: {
     type: String,
     trim: true,
-    required: "String is Required"
+    required: "link is Required"
   },
   speaker: {
     type: String,
     trim: true,
-    required: "String is Required"
+    required: "speaker is Required"
   },
   date_posted: {
     type: String,
     trim: true,
-    required: "String is Required"
+    required: "date posted is Required"
   },
   classification: {
     type: String,
-    trim: true,
-    required: "String is Required"
+    trim: true
   },
   saved: {
     type: Boolean,

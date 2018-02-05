@@ -2,7 +2,7 @@
 // Functions
 //=================================================
 
-function scrapeArticles(){
+function scrapeArticles() {
     console.log("im in scrapeArticles");
     $.ajax({
         method: "GET",
@@ -16,20 +16,20 @@ function scrapeArticles(){
         });
 }
 
-function saveArticle(){
-    console.log("im in saveArticle");
-    // let searcher = "$(#" + thisId + ")";
-    // console.log("searcher " + searcher);
-    console.log("im in saveArticle");
-    console.log("title " +  $(this).closest('#title').val());
-    // var newSavedArticle = {
-    //     id: $(this).data("id"),
-    //         title: $(this).$("#title").val().trim(),
-    //         link: $(this).$("#link").val().trim(),
-    //         speaker: $(this).$("#speaker").val().trim(),
-    //         date_posted: $(this).$("#date_posted").val().trim(),
-    //         classification: $(this).$("#classification").val().trim()
-    // }
+// function saveArticle(){
+//     console.log("im in saveArticle");
+// let searcher = "$(#" + thisId + ")";
+// console.log("searcher " + searcher);
+// console.log("im in saveArticle");
+// console.log("title " +  $(this).closest('#title').val());
+// var newSavedArticle = {
+//     id: $(this).data("id"),
+//         title: $(this).$("#title").val().trim(),
+//         link: $(this).$("#link").val().trim(),
+//         speaker: $(this).$("#speaker").val().trim(),
+//         date_posted: $(this).$("#date_posted").val().trim(),
+//         classification: $(this).$("#classification").val().trim()
+// }
 // console.log("newSavedArticle " + newSavedArticle);
 //     // Send the POST request.
 //     $.ajax("/api/saved/new", {
@@ -40,13 +40,13 @@ function saveArticle(){
 //             // Reload the page to get the updated list
 //             location.reload();
 //         });
-}
+// }
 
 //=================================================
 // On Page Load
 //=================================================
 $(document).ready(function () {
-    
+
     // ========================================================================
     // When the submit button is clicked, a new row is added to the database
     // ========================================================================
@@ -58,18 +58,23 @@ $(document).ready(function () {
 
     $(document).on('click', '.saveBtn', function (event) {
         // Make sure to preventDefault on a submit event. 
-        event.preventDefault();  
+        event.preventDefault();
         console.log("i clicked the save button");
-        var newSavedArticle = {
-            id: $(this).data("id"),
-            title: $(".title").val().trim()
-            // link: $(this).$("#link").val().trim(),
-            // speaker: $(this).$("#speaker").val().trim(),
-            // date_posted: $(this).$("#date_posted").val().trim(),
-            // classification: $(this).$("#classification").val().trim()
-        }
-        console.log("newSavedArticle ");
-        console.log(newSavedArticle);
-        saveArticle();
+        var thisId = $(this).attr("data-id");
+        console.log(`this id is ${thisId}`);
+        //  Send the POST request.
+        $.ajax({
+            type: "PUT",
+            url: "/api/saved/" + thisId,
+            data: {
+                "id": thisId
+            }
+        }).then(function (res) {
+            console.log("i'm back from the server side");
+            console.log(res);
+            $(this).parents("tr").addClass("color");
+            $(".saveBtn").text("Saved");
+            location.reload();
+        });
     });
 });

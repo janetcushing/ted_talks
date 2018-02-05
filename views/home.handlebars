@@ -3,73 +3,33 @@
 
 <main>
     <div class="container">
-        <div class="row">
-            <div class="header">
-                <div class="col-md-12">
-                    <nav>
-                        <button id="logoBtn" class="btn btn-primary btn-lg">
-                            <a href="./home"></a>Ted Talk Scraper
-                        </button>
-                        <button id="homeBtn" class="btn btn-primary btn-lg">
-                            <a href="./home"></a>Home
-                        </button>
-                        <button id="savedBtn" class="btn btn-primary btn-lg">
-                            <a href="./saved"></a>Saved Articles</button>
-
-                        <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Srape New Articles</button>
-                        </li>
-
-                    </nav>
-                </div>
-            </div>
-        </div>
         <div class="jumbotron">
             <h1>Ted Talk Scraper</h1>
-            <p>...</p>
-            <img src="/assets/images/ted-talks.png" width="90%">
+            <div class="row">
+                <div class="header">
+                    <div class="col-md-12">
+                        <nav>
+                            <button id="logoBtn" class="btn btn-primary btn-lg">
+                                <a href="/home"></a>Ted Talk Scraper
+                            </button>
+                            <button id="homeBtn" class="btn btn-primary btn-lg">
+                                <a href="/home"></a>Home
+                            </button>
+                            {{!-- <button id="savedBtn" class="btn btn-primary btn-lg"> --}}
+                                <a href="/saved"></a>Saved Articles</button>
 
+                            <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Srape New Articles</button>
+                            </li>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <img src="/assets/images/ted-talks.png" width="90%">
         </div>
     </div>
     <div class="container">
         <div class="row" id="article-list">
             <div class="col-md-12">
-                {{!--
-                <h3 class="saveddeet">Saved Ted Talks</h3> --}} {{!--
-                <ul>
-                    <lh {{#each scrapedArticles}}>
-                        <li id={{this._id}} class="articles">
-
-                            <span>
-                                <p id="title" value={{this.title}} class="label2">Title: </p>
-                                <p>{{this.title}}</p>
-                            </span>
-                            <span>
-                                <p id="link" value={{this.link}} class="label2">Link: </p>
-                                <p>{{this.link}}</p>
-                            </span>
-                            <span>
-                                <p id="speaker" value={{this.speaker}} class="label2">Speaker: </p>
-                                <p>{{this.speaker}}</p>
-                            </span>
-                            <span>
-                                <p id="date_posted" value={{this.date_posted}} class="label2">Date Posted: </p>
-                                <p>{{this.date_posted}}</p>
-                            </span>
-                            <span>
-                                <p id="classification" value={{this.classification}} class="label2">Classification: </p>
-                                <p>{{this.classification}}</p>
-                            </span>
-
-                            <p class="hideText">
-                                <p id="object_id" value={{this._id}} class="label2">ID: </p>
-                                <p>{{this._id}}</p>
-                            </p>
-                            <button onclick="saveArticle()" class="saveBtn btn btn-lg btn-success" type="submit" name="action" data-id={{this._id}}>Save This Talk
-                            </button>
-                        </li>
-                    </lh>
-                    {{/each}}
-                </ul> --}}
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -77,22 +37,21 @@
                             <th>Speaker</th>
                             <th>Classification</th>
                             <th>Date Posted</th>
+                            <th>ID</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody {{#each scrapedArticles}}>
                         <tr>
-                            {{!--
-                            <th scope="row">1</th> --}}
                             <td>
                                 <a href="https://www.ted.com{{this.link}}">{{this.title}}</a>
                             </td>
                             <td>{{this.speaker}}</td>
                             <td>{{this.classification}}</td>
                             <td>{{this.date_posted}}</td>
+                            <td>{{this.id}}</td>
                             <td>
-                                <button onclick="saveArticle()" class="saveBtn btn btn-lg btn-success" type="submit" name="action"
-                                    data-id={{this._id}}>Save This Talk
+                                <button class="saveBtn btn btn-lg btn-success" type="submit" name="action" data-id="{{this.id}}">Save This Talk
                                 </button>
                             </td>
                         </tr>
@@ -116,7 +75,7 @@
                     <a href="https://www.ted.com">https://www.ted.com</a>
                 </p>¸
                 </br>
-                </br>© 2018 Copyright Ted Talk Scraper 
+                </br>© 2018 Copyright Ted Talk Scraper
                 <a href="https://github.com/janetcushing">Janet Cushing</a>
             </div>
         </div>
