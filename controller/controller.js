@@ -7,7 +7,7 @@ var router = express.Router();
 // 
 // var db = require("../models");
 var Articles = require("../models/articles.js");
-var SavedArticles = require("../models/savedArticles.js");
+// var SavedArticles = require("../models/savedArticles.js");
 
 // // Database configuration
 // var databaseUrl = "ted_talks";
@@ -25,6 +25,22 @@ const previousTitles = [];
 //=================================================
 // Functions
 //=================================================
+
+function initializePreviousTitlesArray() {
+  previousTitles.length = 0;
+  Articles.find({})
+    .then(function (data) {
+      data.forEach(function (element) {
+        previousTitles.push(element.title);
+      });
+      console.log(`PreviousTitles ${previousTitles.toString()}`);
+    }).catch(function (error) {
+      // Throw any errors to the console
+      console.log("DB Error from getPreviouslyScrapedArticles")
+      console.log(error);
+    });
+}
+
 function checkForPreviousInserts(title) {
   console.log(title);
   console.log(previousTitles.toString());
@@ -58,16 +74,17 @@ function insertNewArticles(currentArticles, res) {
   console.log("dumping currentArticles and there should be multiple");
   console.log(currentArticles);
   // Articles.create(articleDetails).then(function (data) {
-  Articles.collection.insert(currentArticles, function (err, data) {
+  // Articles.collection.insert(currentArticles, function (err, data) {
+  Articles.insertMany(currentArticles, function (err, data) {
     if (err) {
       console.log("There was a DB error");
       console.log(err);
       res.status(500).end();
     } else {
       console.log("inserted");
-      console.log("inserted this many: " + data.insertedCount);
-      // console.log(data);
-      let result = data.insertedCount.toString();
+      // console.log("inserted this many: " + data.insertedCount);
+      console.log(data);
+      let result = data.length.toString();
       console.log("RESULT" + result);
       res.send(result);
       // res.status(200).end();
@@ -88,41 +105,54 @@ function insertNewArticles(currentArticles, res) {
 //   }
 // }
 
-
-function createNewSavedArticle(req, res) {
-  console.log("im in createNewSavedArticle");
-  SavedArticles.$push({
-    articleId: req.body.id,
-    title: req.body.title,
-    link: req.body.link,
-    speaker: req.body.speaker,
-    date_posted: req.body.date_posted,
-    classification: req.body.classification
-  }), (function (error, data) {
-    if (data) {
-      console.log(data);
-      res.status(200).end();
-    } else if (err) {
-      // If an error occurred, send a generic server failure
-      console.log("There was a DB error");
-      console.log(err);
-      res.status(500).send("A Server Error Occurred");
+function updateSavedArticle(req, res) {
+  console.log("im in updateSavedArticle");
+  console.log(`req.body and req.params:`);
+  console.log(req.body);
+  console.log(req.params);
+  // Tank.update({ _id: id }, { $set: { size: 'large' }}, callback);
+  Articles.findByIdAndUpdate(req.params.id, {
+    $set: {
+      saved: true
     }
+  }).then(function (data) {
+    console.log(data);
+    res.send("success");
+  }).catch(function (err) {
+    console.log("There was a DB error - updateSavedArticle");
+    console.log(err);
+    res.status(500).send("A Server Error Occurred");
   });
 }
 
+// function createNewSavedArticle(req, res) {
+//   console.log("im in createNewSavedArticle");
+//   SavedArticles.$push({
+//     articleId: req.body.id,
+//     title: req.body.title,
+//     link: req.body.link,
+//     speaker: req.body.speaker,
+//     date_posted: req.body.date_posted,
+//     classification: req.body.classification
+//   }), (function (error, data) {
+//     if (data) {
+//       console.log(data);
+//       res.status(200).end();
+//     } else if (err) {
+//       // If an error occurred, send a generic server failure
+//       console.log("There was a DB error");
+//       console.log(err);
+//       res.status(500).send("A Server Error Occurred");
+//     }
+//   });
+// }
+
 function getPreviouslyScrapedArticles(req, res) {
-  Articles.find({}, function (error, data) {
-    // Throw any errors to the console
-    if (error) {
-      console.log(error);
-    }
-    // If there are no errors, return the data to the home page
-    else {
-      console.log(data);
+  Articles.find().where('saved').equals(false)
+    .then(function (data) {
       const scrapedArticles = [];
       data.forEach(function (element) {
-        previousTitles.push(element.title);
+        // previousTitles.push(element.title);
         scrapedArticles.push({
           id: element._id,
           title: element.title,
@@ -133,13 +163,31 @@ function getPreviouslyScrapedArticles(req, res) {
           saved: false
         });
       });
-      console.log(previousTitles);
       res.render("home", {
         scrapedArticles
       });
-    }
-  });
+    }).catch(function (error) {
+      // Throw any errors to the console
+      console.log("DB Error from getPreviouslyScrapedArticles")
+      console.log(error);
+    });
 }
+
+function getSavedArticles(req, res) {
+  console.log("IM IN getSavedArticles");
+  Articles.find().where('saved').equals(true)
+    .then(function (savedArticles) {
+      console.log("DATA GOT RETURNED FROM GETSAVEDArTICLES");
+      console.log(savedArticles);
+      res.render("saved", {
+        "savedArticles": savedArticles
+      })
+    }).catch(function (err) {
+      console.log("DB Error from getSavedArticles")
+      console.log(err);
+    });
+}
+
 
 //==============
 // ROUTES
@@ -147,6 +195,7 @@ function getPreviouslyScrapedArticles(req, res) {
 
 // Main route (simple Hello World Message)
 router.get("/", function (req, res) {
+  initializePreviousTitlesArray();
   getPreviouslyScrapedArticles(req, res);
   // res.render("home");
   // res.send("Hello world");
@@ -154,6 +203,13 @@ router.get("/", function (req, res) {
 
 router.get("/home", function (req, res) {
   getPreviouslyScrapedArticles();
+  // res.render("home");
+  // res.send("Hello world");
+});
+
+router.get("/saved", function (req, res) {
+  console.log("IM ON DTHE SERVER SIDE FOR SAVED");
+  getSavedArticles(req, res);
   // res.render("home");
   // res.send("Hello world");
 });
@@ -205,7 +261,7 @@ router.get("/scrape", function (req, res) {
       console.log(`isRepeatTitle ${isRepeatTitle}`);
       if (isRepeatTitle) {
         console.log(`this is a repeat title ${articleDetails.title}`);
-      }else {
+      } else {
         currentArticles.push(articleDetails);
         previousTitles.push(articleDetails.title);
         console.log("counter3 " + counter);
@@ -272,13 +328,7 @@ router.get("/scrape", function (req, res) {
 // });
 
 
-//----------------------------------------------
-// Route to add a new saved article from the
-// home page
-//----------------------------------------------
-router.post("/api/saved/new", function (req, res) {
-  createNewSavedArticle(req, res);
-});
+
 
 
 //--------------------------------------
