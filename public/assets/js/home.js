@@ -8,10 +8,10 @@ function scrapeArticles(){
         method: "GET",
         url: "/scrape"
     }).then(
-        function () {
+        function (res) {
             // Reload the page to get the updated list
             console.log("im back from scraping");
-            alert("I scraped 20 talks!");
+            alert(`I scraped ${res} talks!`);
             location.reload();
         });
 }

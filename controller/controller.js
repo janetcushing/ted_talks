@@ -67,8 +67,10 @@ function insertNewArticles(currentArticles, res) {
       console.log("inserted");
       console.log("inserted this many: " + data.insertedCount);
       // console.log(data);
-      // res.status(200).send(data.insertedCount);
-      res.status(200).end();
+      let result = data.insertedCount.toString();
+      console.log("RESULT" + result);
+      res.send(result);
+      // res.status(200).end();
     }
   });
 }
@@ -200,7 +202,10 @@ router.get("/scrape", function (req, res) {
         saved: false
       }
       let isRepeatTitle = checkForPreviousInserts(articleDetails.title);
-      if (!isRepeatTitle) {
+      console.log(`isRepeatTitle ${isRepeatTitle}`);
+      if (isRepeatTitle) {
+        console.log(`this is a repeat title ${articleDetails.title}`);
+      }else {
         currentArticles.push(articleDetails);
         previousTitles.push(articleDetails.title);
         console.log("counter3 " + counter);
