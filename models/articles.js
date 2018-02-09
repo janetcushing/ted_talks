@@ -61,6 +61,9 @@ var ArticlesSchema = new Schema({
     type: Boolean,
     default: false
   },
+  notes: { 
+  type: Array
+  },
   insertDate: {
     type: Date,
     default: Date.now

@@ -1,52 +1,54 @@
 var express = require("express");
 var request = require("request");
 var cheerio = require("cheerio");
-// var db = require("../models");
+var rp = require('request-promise');
+const eachPromise = require('each-promise')
 var mongojs = require("mongojs");
 var router = express.Router();
-// 
-// var db = require("../models");
 var Articles = require("../models/articles.js");
-// var SavedArticles = require("../models/savedArticles.js");
 
-// // Database configuration
-// var databaseUrl = "ted_talks";
-// var collections = ["articles", "savedArticles"];
-
-// // Hook mongojs configuration to the db variable
-// var db = mongojs(databaseUrl, collections);
-// db.on("error", function (error) {
-//   console.log("Database Error:", error);
-// });
-
-// module.exports = db;
-const previousTitles = [];
-
+// var prevTitleObject = require("./controller/prevTitleObject");
+const prevlinks = [];
 //=================================================
 // Functions
 //=================================================
-
-function initializePreviousTitlesArray() {
-  previousTitles.length = 0;
+function initializePreviouslinksArray() {
+  prevlinks.length = 0;
   Articles.find({})
     .then(function (data) {
       data.forEach(function (element) {
-        previousTitles.push(element.title);
+        prevlinks.push(element.link);
+        console.log("element.link: " + element.link);
+        console.log("prevlinks: " + prevlinks[prevlinks.indexOf(element.link)]);
       });
-      console.log(`PreviousTitles ${previousTitles.toString()}`);
+      console.log(`Previouslinks ${prevlinks.toString()}`);
     }).catch(function (error) {
       // Throw any errors to the console
-      console.log("DB Error from getPreviouslyScrapedArticles")
+      console.log("DB Error from initializePreviouslinksArray")
       console.log(error);
     });
 }
 
-function checkForPreviousInserts(title) {
-  console.log(title);
-  console.log(previousTitles.toString());
-  console.log("prevTitles includes title" + previousTitles.includes(title));
-  return previousTitles.includes(title);
+function searchForPreviousInserts(link) {
+  Articles.find().where('link').equals(link)
+    .then(function (data) {
+      console.log("DATA");
+      console.log(data);
+      return true;
+    }).catch(function (error) {
+      // Throw any errors to the console
+      console.log("DB Error from searchForPreviousInserts")
+      console.log(error);
+    });
 }
+
+
+// function checkForPreviousInserts(title) {
+//   console.log(title);
+//   console.log(previousTitles.toString());
+//   console.log("prevTitles includes title" + previousTitles.includes(title));
+//   return previousTitles.includes(title);
+// }
 // console.log("im in checkForPreviousInserts");
 // // console.log("article details");
 // // console.log(articleDetails);
@@ -92,6 +94,27 @@ function insertNewArticles(currentArticles, res) {
   });
 }
 
+// function insertOneNewArticles(articleDetails, res) {
+//   console.log("im in insertOneNewArticles");
+//   console.log("dumping articleDetails ");
+//   console.log(articleDetails);
+//   Articles.insert(articleDetails)
+//     .then(function (err, data) {
+//       console.log("inserted");
+//       // console.log("inserted this many: " + data.insertedCount);
+//       console.log(data);
+//       // let result = data.length.toString();
+//       // console.log("RESULT" + result);
+//       // res.send(result);
+//       return true;
+//     }).catch(function (err, data) {
+//       console.log("There was a DB error - insertOneNewArticles");
+//       console.log(err);
+//       res.status(500).end();
+//     });
+// }
+
+
 // function onInsert(err, data) {
 //   if (err) {
 //     console.log("There was a DB error");
@@ -110,10 +133,9 @@ function updateSavedArticle(req, res) {
   console.log(`req.body and req.params:`);
   console.log(req.body);
   console.log(req.params);
-  // Tank.update({ _id: id }, { $set: { size: 'large' }}, callback);
   Articles.findByIdAndUpdate(req.params.id, {
     $set: {
-      saved: true
+      saved: req.body.saved
     }
   }).then(function (data) {
     console.log(data);
@@ -124,6 +146,101 @@ function updateSavedArticle(req, res) {
     res.status(500).send("A Server Error Occurred");
   });
 }
+
+function displayNotesInModal(req, res) {
+  console.log("im in displayNotesInModal");
+  Articles.findById(req.params.id)
+    .then(function (data) {
+      console.log(data);
+      const prevNotes = [];
+      for (let i = 0; i < data.notes.length; i++) {
+        console.log(data.notes[i]);
+        prevNotes.push({
+          "noteId": i,
+          "note": data.notes[i]
+        });
+      }
+      console.log("prevNotes:");
+      console.log(prevNotes);
+      res.render("saved", {
+        prevNotes: prevNotes
+      });
+    }).catch(function (err) {
+      console.log("There was a DB error - displayNotesInModal");
+      console.log(err);
+      res.status(500).send("A Server Error Occurred");
+    });
+}
+
+
+function addANote(req, res) {
+  console.log("im in addANote");
+  Articles.findByIdAndUpdate(req.params.id, {
+    $addToSet: {
+      notes: req.body.note
+    }
+
+  }, {
+    new: true
+  }).then(function (data) {
+    console.log(data);
+    const prevNotes = [];
+    for (let i = 0; i < data.notes.length; i++) {
+      console.log(data.notes[i]);
+      prevNotes.push({
+        "noteId": i,
+        "note": data.notes[i]
+      });
+    }
+    console.log("prevNotes:");
+    console.log(prevNotes);
+    res.render("saved", {
+      prevNote: prevNotes
+    });
+  }).catch(function (err) {
+    console.log("There was a DB error - addANote");
+    console.log(err);
+    res.status(500).send("A Server Error Occurred");
+  });
+}
+
+// function addANote(req, res) {
+// console.log("im in addANote");
+// console.log('req.body and req.params:');
+// // console.log("im about to update");
+// // console.log(req.body);
+// // console.log(req.params);
+
+// Articles.findByIdAndUpdate(req.params.id, 
+//   { $addToSet: { notes: '<value1>' }, 
+//  Articles.update(
+//    {_id: req.params.id}, 
+// {$addToSet: {notes: [req.body.note]}
+// Articles.update({
+//     "_id": req.params.id
+//   }, {
+//     push: {
+//       "note": "note"
+//     }
+//   }, {
+//     validateBeforeSave: false,
+//     upsert: false
+//   },
+//   function (err, model) {
+//     console.log(model);
+//     console.log(err);
+//   }
+// );
+// }
+// }).then(function (data) {
+//   console.log(data);
+//   res.send("success");
+// }).catch(function (err) {
+//   console.log("There was a DB error - addANote");
+//   console.log(err);
+//   res.status(500).send("A Server Error Occurred");
+// });
+
 
 // function createNewSavedArticle(req, res) {
 //   console.log("im in createNewSavedArticle");
@@ -195,99 +312,53 @@ function getSavedArticles(req, res) {
 
 // Main route (simple Hello World Message)
 router.get("/", function (req, res) {
-  initializePreviousTitlesArray();
+  initializePreviouslinksArray();
   getPreviouslyScrapedArticles(req, res);
-  // res.render("home");
-  // res.send("Hello world");
 });
 
-router.get("/home", function (req, res) {
-  getPreviouslyScrapedArticles();
-  // res.render("home");
-  // res.send("Hello world");
-});
-
-router.get("/saved", function (req, res) {
-  console.log("IM ON DTHE SERVER SIDE FOR SAVED");
-  getSavedArticles(req, res);
-  // res.render("home");
-  // res.send("Hello world");
-});
-
-// router.get("/scrape", function (req, res) {
-//   getScrapedArticles();
+// router.get("/home", function (req, res) {
+//   getPreviouslyScrapedArticles();
 // });
 
-// Retrieve data from the db
-/*
-router.get("/all", function (req, res) {
-  // Find all results from the scrapedData collection in the db
-  db.articles.find({}, function (error, found) {
-    // Throw any errors to the console
-    if (error) {
-      console.log(error);
-    }
-    // If there are no errors, send the data to the browser as json
-    else {
-      res.json(found);
-    }
-  });
-});
-*/
-
-// Scrape data from one site and place it into the mongodb db
-router.get("/scrape", function (req, res) {
-  request("https://www.ted.com/talks", function (error, response, html) {
-    // Load the html body from request into cheerio
-    const $ = cheerio.load(html);
-    const currentArticles = [];
-    let counter = 0;
-    console.log("counter1 " + counter);
-    // For each element with a "media__message" class
-    $(".media__message").each(function (i, element) {
-      console.log("Im in media message");
-      console.log("counter2 " + counter);
-      // Save the text and href of each link enclosed in the current element
-      let articleDetails = {
-        title: $(element).children().children("a").text(),
-        // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
-        link: $(element).children().children("a").attr("href"),
-        speaker: $(element).children(".talk-link__speaker").text(),
-        date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
-        classification: $(element).children().children(".meta__row").children(".meta__val").text(),
-        saved: false
-      }
-      let isRepeatTitle = checkForPreviousInserts(articleDetails.title);
-      console.log(`isRepeatTitle ${isRepeatTitle}`);
-      if (isRepeatTitle) {
-        console.log(`this is a repeat title ${articleDetails.title}`);
-      } else {
-        currentArticles.push(articleDetails);
-        previousTitles.push(articleDetails.title);
-        console.log("counter3 " + counter);
-        counter++;
-        console.log("counter4 " + counter);
-      }
-      //limits the Ted Talks returned to 20
-      if (counter == 5) {
-        console.log("counter5 " + counter);
-        console.log("counter6 " + counter);
-        insertNewArticles(currentArticles, res);
-        return false;
-      }
-    });
-
-  });
+router.get("/saved", function (req, res) {
+  console.log("IM ON THE SERVER SIDE FOR SAVED");
+  getSavedArticles(req, res);
 });
 
+//----------------------------------------------
+// Route to update the  saved boolean from the
+// home page or saved page.  Saved is set to true
+// from the home page when the article is saved
+// and set to false from the saved page when the
+// "delete from saved" button is clicked
+//----------------------------------------------
+router.put("/api/saved/:id", function (req, res) {
+  updateSavedArticle(req, res);
+});
 
+//----------------------------------------------
+// Route to update the  saved article with a new  
+// note, from the saved page
+//----------------------------------------------
+router.put("/api/note/:id", function (req, res) {
+  addANote(req, res);
+});
 
-// Make a request for the news section of ycombinator
+//----------------------------------------------
+// Route to populate the previous notes  
+// in the modal on the saved page
+//----------------------------------------------
+router.get("/api/prevnotes/:id", function (req, res) {
+  displayNotesInModal(req, res);
+});
+
 
 // request("https://www.ted.com/talks", function (error, response, html) {
 //   // Load the html body from request into cheerio
 //   var $ = cheerio.load(html);
 //   // For each element with a "title" class
+//    const currentArticles = [];
+//     let counter = 0;
 //   $(".media__message").each(function (i, element) {
 //     console.log("Im in media message");
 //     // Save the text and href of each link enclosed in the current element
@@ -297,37 +368,172 @@ router.get("/scrape", function (req, res) {
 //     var speaker = $(element).children(".talk-link__speaker").text();
 //     var date_posted = $(element).children().children(".meta__item").children(".meta__val").text();
 //     var classification = $(element).children().children(".meta__row").children(".meta__val").text();
+//       Articles.findOne().where('title').equals(element.title)
+//         .then(function (error, data) {
+//           console.log("DATA");
+//           console.log(data);
+//          currentArticles.push(articleDetails);
+//             counter++;
+//          let articleDetails = {
+//               title: $(element).children().children("a").text(),
+//               // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
+//               link: $(element).children().children("a").attr("href"),
+//               speaker: $(element).children(".talk-link__speaker").text(),
+//               date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
+//               classification: $(element).children().children(".meta__row").children(".meta__val").text(),
+//               saved: false
+//             }
+//             currentArticles.push(articleDetails);
+//             counter++;
+//             if (counter == 5) {
+//               console.log("counter5 " + counter);
+//               insertNewArticles(currentArticles, res);
+//               return false;
+//             }
 
-// If this found element had both a title and a link
-// if (title && link) {
-//   // Insert the data in the scrapedData db
-//   db.articles.insert({
-//       title: title,
-//       link: link,
-//       speaker: speaker,
-//       date_posted: date_posted,
-//       classification: classification
-//     },
-//     function (err, inserted) {
-//       if (err) {
-//         // Log the error if one is encountered during the query
-//         console.log(err);
+//         }).catch(function (error, data) {
+//           // Throw any errors to the console
+//           console.log("DB Error from searchForPreviousInserts")
+//           console.log(error);
+//         });
+//     });
+//   });
+//         });
+//     }
+//     //returns 20 Ted Talks
+//     return i < 5;
+//   });
+// });
+
+
+// router.get("/scrape", function (req, res) {
+//   request("https://www.ted.com/talks", function (error, response, html) {
+//     // Load the html body from request into cheerio
+
+//     const $ = cheerio.load(html);
+//     const currentArticles = [];
+//     let counter = 0;
+//     console.log("counter1 " + counter);
+//     // For each element with a "media__message" class
+//     $(".media__message").each((i, element) => {
+//       console.log("Im in media message");
+//       console.log("counter2 " + counter);
+//       // console.log(element);
+//       var title1 = $(element).children().children("a").text();
+//       // let isRepeatTitle = searchForPreviousInserts(element.title);
+//       Articles.findOne().where('title').equals(title1)
+//         .then(function (error, found) {
+//           console.log("FOUND: " + JSON.stringify(found, null, 2));
+//           let continueLoop = true;
+//           if (!found) {
+//             // Save the text and href of each link enclosed in the current element
+//             let articleDetails = {
+//               title: $(element).children().children("a").text(),
+//               // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
+//               link: $(element).children().children("a").attr("href"),
+//               speaker: $(element).children(".talk-link__speaker").text(),
+//               date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
+//               classification: $(element).children().children(".meta__row").children(".meta__val").text(),
+//               saved: false
+//             }
+//             // insertOneNewArticles(articleDetails, res);
+//             counter++;
+//             console.log("counter3 " + counter);
+//             if (counter < 3) {
+//               currentArticles.push(articleDetails);
+//               // insertNewArticles(currentArticles, res);
+//             } else if (counter = 3) {
+//               currentArticles.push(articleDetails);
+//               insertNewArticles(currentArticles, res);
+//               continueLoop = false;
+//             } else if (counter > 3) {
+//               continueLoop = false;
+//             }
+//           } else { //if article is found
+//             console.log("article previously inserted: " + JSON.stringify(data));
+//           }
+//           return continueLoop;
+//           // console.log("counter6 " + counter);
+//           // insertNewArticles(currentArticles, res);
+//         }).catch(function (error, data) {
+//           // Throw any errors to the console
+//           console.log("DB Error from searchForPreviousInserts")
+//           console.log(error);
+//         });
+//     });
+//   });
+// });
+
+router.get("/scrape", function (req, res) {
+  request("https://www.ted.com/talks", function (error, response, html) {
+    // Load the html body from request into cheerio
+
+    const $ = cheerio.load(html);
+    const currentArticles = [];
+    let counter = 0;
+    console.log("counter1 " + counter);
+    // For each element with a "media__message" class
+    $(".media__message").each((i, element) => {
+      console.log("Im in media message");
+      console.log("counter2 " + counter);
+      // console.log(element);
+      let articleDetails = {
+        title: $(element).children().children("a").text(),
+        // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
+        link: $(element).children().children("a").attr("href"),
+        speaker: $(element).children(".talk-link__speaker").text(),
+        date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
+        classification: $(element).children().children(".meta__row").children(".meta__val").text(),
+        saved: false
+      }
+      console.log("im about to do the if prevlinks");
+      console.log(`articleDetails.link  *${articleDetails.link}*`);
+      console.log(`prevlinks0 *${prevlinks[0]}*`);
+      console.log(`prevlinks1 *${prevlinks[1]}*`);
+      if (prevlinks.includes(articleDetails.link.toString())) {
+        console.log("prevlinks includes link")
+      }else{
+        console.log("prevlinks doesnt includes link")
+        currentArticles.push(articleDetails);
+        prevlinks.push(articleDetails.link);
+        counter++;
+      }
+      // returns 20 Ted Talks   
+      return counter < 2;
+    });
+    console.log("dumping CURRENTARTICLES");
+    console.log(currentArticles);
+    insertNewArticles(currentArticles, res);
+  });
+});
+
+
+
+
+
+
+// let isRepeatTitle = checkForPreviousInserts(articleDetails.title);
+
+//       console.log(`isRepeatTitle ${isRepeatTitle}`);
+//       if (isRepeatTitle) {
+//         console.log(`this is a repeat title ${articleDetails.title}`);
 //       } else {
-//         // Otherwise, log the inserted data
-//         console.log(inserted);
+//         currentArticles.push(articleDetails);
+//         // previousTitles.push(articleDetails.title);
+//         console.log("counter3 " + counter);
+//         counter++;
+//         console.log("counter4 " + counter);
+//       }
+//       //limits the Ted Talks returned to 20
+//       if (counter == 5) {
+//         console.log("counter5 " + counter);
+//         console.log("counter6 " + counter);
+//         insertNewArticles(currentArticles, res);
+//         return false;
 //       }
 //     });
-// }
-// //returns 20 Ted Talks
-// return i < 19;
+//   });
 // });
-// });
-
-// Send a "Scrape Complete" message to the browser
-// res.send("Ted Scrape Complete");
-// });
-
-
 
 
 

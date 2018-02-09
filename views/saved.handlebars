@@ -1,66 +1,137 @@
 <link rel="stylesheet" href="/assets/css/style.css">
 
 <div class="container">
-    
     <div class="jumbotron">
-      <div class="row">
-        <div class="header">
-            <div class="col-md-12">
-                <nav>
-                    <button id="logoBtn" class="btn btn-primary btn-lg">
-                        <a href="./home"></a>Ted Talk Scraper
-                    </button>
-                    <button id="homeBtn" class="btn btn-primary btn-lg">
-                        <a href="./home"></a>Home
-                    </button>
-                    <button id="savedBtn" class="btn btn-primary btn-lg">
-                        <a href="./saved"></a>Saved Articles</button>
-                    </li>
-                </nav>
-            </div>
-        </div>
-    </div>
+        <nav>
+            <span>
+                <h1>
+                    <a href="/">Ted Talk Scraper</a>
+                </h1>
+                <a href="/">
+                    <button id="homeBtn" class="btn btn-primary btn-lg">Home</button>
+                </a>
+                {{!--
+                <a href="/saved">
+                    <button id="savedBtn" class="btn btn-primary btn-lg">Saved Articles</button>
+                </a> --}} {{!--
+                <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Scrape New Articles</button> --}}
+            </span>
+        </nav>
         <img src="/assets/images/ted-talks.png" width="90%">
     </div>
 </div>
-<div class="container">
-    <div class="row" id="article-list">
-        <div class="col-md-12">
-            <h3 class="saveddeet">Saved Ted Talks</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Title/Link</th>
-                        <th>Speaker</th>
-                        <th>Classification</th>
-                        <th>Date Posted</th>
-                        <th>Save?</th>
-                    </tr>
-                </thead>
-                <tbody {{#each savedArticles}}>
-                    <tr>
-                        <td>
-                            <a href="https://www.ted.com{{this.link}}">{{this.title}}</a>
-                        </td>
-                        <td>{{this.speaker}}</td>
-                        <td>{{this.classification}}</td>
-                        <td>{{this.date_posted}}</td>
-                        <td>
-                            <button id="addanoteBtn" class="btn btn-lg btn-success" type="submit" name="action" 
-                            data-id={{this._id}}>Add a Note
-                            </button>
-                            <br>
-                            <button id="deleteBtn" class="btn btn-lg btn-success" type="submit" 
-                            name="action" data-id={{this.id}}>Delete from Saved</button>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-                {{/each}}
-            </table>
+<main>
+    <div class="container">
+        <div class="row" id="article-list">
+            <div class="col-md-12">
+                <h3 class="saveddeet">SavedTedTalks</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title/Link</th>
+                            <th>Speaker</th>
+                            <th>Classification</th>
+                            <th>Date Posted</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody {{#each savedArticles}}>
+                        <tr>
+                            <td>
+                                <a href="https://www.ted.com{{this.link}}">{{this.title}}</a>
+                            </td>
+                            <td>{{this.speaker}}</td>
+                            <td>{{this.classification}}</td>
+                            <td>{{this.date_posted}}</td>
+                            <td>
+                                <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="{{this._id}}" data-toggle="modal"
+                                    data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                                </button>
+                                <br>
+                                <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="{{this.id}}">Delete from Saved</button>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {{/each}}
+                </table>
+            </div>
         </div>
     </div>
-</div>
+
+    {{!--
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal for @fat</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">Open modal for @getbootstrap</button> --}}
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label for="recipient-name" class="form-control-label">Previous Notes:</label>
+                        <ul {{#each prevNotes}}>
+                            <li id="{{this.noteId}}">{{this.noteId}}: {{this.note}}</li>
+                            <li>
+                                <button class="deletenoteBtn btn btn-sm" type="submit" name="action" 
+                                data-id="{{this.noteId}}" data-toggle="modal" data-target="#exampleModal"
+                                    data-whatever="{{this.note}}">Delete
+                                </button>
+                            </li>
+                        </ul>
+                        {{/each}}
+                    </div>
+                    <br>
+
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">New Note:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="save-note" type="submit" class="btn btn-primary">Save Note</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Button trigger modal -->
+    {{!--
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button> --}}
+
+    <!-- Modal -->
+    {{!--
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
 
 </main>
 <div class="container">
@@ -75,7 +146,7 @@
                     <a href="https://www.ted.com">https://www.ted.com</a>
                 </p>
                 </br>
-                </br>© 2018 Copyright Ted Talk Scraper 
+                </br>© 2018 Copyright Ted Talk Scraper
                 <a href="https://github.com/janetcushing">Janet Cushing</a>
             </div>
         </div>

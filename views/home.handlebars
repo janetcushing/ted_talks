@@ -1,29 +1,19 @@
 <link rel="stylesheet" href="/assets/css/style.css">
 
-
 <main>
     <div class="container">
         <div class="jumbotron">
-            <h1>Ted Talk Scraper</h1>
-            <div class="row">
-                <div class="header">
-                    <div class="col-md-12">
-                        <nav>
-                            <button id="logoBtn" class="btn btn-primary btn-lg">
-                                <a href="/home"></a>Ted Talk Scraper
-                            </button>
-                            <button id="homeBtn" class="btn btn-primary btn-lg">
-                                <a href="/home"></a>Home
-                            </button>
-                            {{!-- <button id="savedBtn" class="btn btn-primary btn-lg"> --}}
-                                <a href="/saved"></a>Saved Articles</button>
-
-                            <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Srape New Articles</button>
-                            </li>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+            <nav>
+                <span>
+                    <h1>
+                        <a href="/">Ted Talk Scraper</a>
+                    </h1>
+                        <a href="/"><button id="homeBtn" class="btn btn-primary btn-lg">Home</button>
+                        </a>
+                        <a href="/saved"> <button id="savedBtn" class="btn btn-primary btn-lg">Saved Articles</button></a> 
+                    <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Scrape New Articles</button>
+                </span>
+            </nav>
             <img src="/assets/images/ted-talks.png" width="90%">
         </div>
     </div>
