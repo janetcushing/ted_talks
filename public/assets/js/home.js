@@ -67,7 +67,8 @@ $(document).ready(function () {
             type: "PUT",
             url: "/api/saved/" + thisId,
             data: {
-                "id": thisId
+                "id": thisId,
+                "saved": true
             }
         }).then(function (res) {
             console.log("i'm back from the server side");

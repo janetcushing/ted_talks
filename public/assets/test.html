@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ted Talks Scraper</title>
+    <!-- Link to favicon -->
+    <link rel="icon" type="image/png" href="https://pa.tedcdn.com/favicon.ico">
+    <!-- Link to reset CSS stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+    <!-- link to bootstrap library -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <!-- Link to reset CSS stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">˝
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script> 
+    <script src="/assets/js/home.js"></script>
+    <script src="/assets/js/saved.js"></script>
+    
+   
+</head>
+
+<body>
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+<div class="container">
+    <div class="jumbotron">
+        <nav>
+            <span>
+                <h1>
+                    <a href="/">Ted Talk Scraper</a>
+                </h1>
+                <a href="/">
+                    <button id="homeBtn" class="btn btn-primary btn-lg">Home</button>
+                </a>
+                 
+            </span>
+        </nav>
+        <img src="/assets/images/ted-talks.png" width="90%">
+    </div>
+</div>
+<main>
+    <div class="container">
+        <div class="row" id="article-list">
+            <div class="col-md-12">
+                <h3 class="saveddeet">SavedTedTalks</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title/Link</th>
+                            <th>Speaker</th>
+                            <th>Classification</th>
+                            <th>Date Posted</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody                 </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">Previous Notes:</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                            <ul >
+                                <li id="0">0: hello world</li>
+                                <li>
+                                    <button class="deletenoteBtn btn btn-sm" type="submit" name="action" data-id="0"
+                                        data-toggle="modal" data-target="#exampleModal" data-whatever="hello world">Delete
+                                    </button>
+                                </li>
+                            </ul>
+                            <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="" data-toggle="modal"
+                                data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                            </button>
+                            <br>
+                            <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="">Delete from Saved</button>
+                            </button>
+                            </td>
+                            </tr>
+                            </tbody>
+>
+                                <li id="1">1: whats up doc</li>
+                                <li>
+                                    <button class="deletenoteBtn btn btn-sm" type="submit" name="action" data-id="1"
+                                        data-toggle="modal" data-target="#exampleModal" data-whatever="whats up doc">Delete
+                                    </button>
+                                </li>
+                            </ul>
+                            <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="" data-toggle="modal"
+                                data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                            </button>
+                            <br>
+                            <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="">Delete from Saved</button>
+                            </button>
+                            </td>
+                            </tr>
+                            </tbody>
+>
+                                <li id="2">2: &lt;value1&gt;</li>
+                                <li>
+                                    <button class="deletenoteBtn btn btn-sm" type="submit" name="action" data-id="2"
+                                        data-toggle="modal" data-target="#exampleModal" data-whatever="&lt;value1&gt;">Delete
+                                    </button>
+                                </li>
+                            </ul>
+                            <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="" data-toggle="modal"
+                                data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                            </button>
+                            <br>
+                            <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="">Delete from Saved</button>
+                            </button>
+                            </td>
+                            </tr>
+                            </tbody>
+>
+                                <li id="3">3: this note is going in the db</li>
+                                <li>
+                                    <button class="deletenoteBtn btn btn-sm" type="submit" name="action" data-id="3"
+                                        data-toggle="modal" data-target="#exampleModal" data-whatever="this note is going in the db">Delete
+                                    </button>
+                                </li>
+                            </ul>
+                            <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="" data-toggle="modal"
+                                data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                            </button>
+                            <br>
+                            <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="">Delete from Saved</button>
+                            </button>
+                            </td>
+                            </tr>
+                            </tbody>
+>
+                                <li id="4">4: new note new note</li>
+                                <li>
+                                    <button class="deletenoteBtn btn btn-sm" type="submit" name="action" data-id="4"
+                                        data-toggle="modal" data-target="#exampleModal" data-whatever="new note new note">Delete
+                                    </button>
+                                </li>
+                            </ul>
+                            <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="" data-toggle="modal"
+                                data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                            </button>
+                            <br>
+                            <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="">Delete from Saved</button>
+                            </button>
+                            </td>
+                            </tr>
+                            </tbody>
+>
+                                <li id="5">5: another note</li>
+                                <li>
+                                    <button class="deletenoteBtn btn btn-sm" type="submit" name="action" data-id="5"
+                                        data-toggle="modal" data-target="#exampleModal" data-whatever="another note">Delete
+                                    </button>
+                                </li>
+                            </ul>
+                            <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="" data-toggle="modal"
+                                data-target="#exampleModal" data-whatever="@mdo">Add a Note
+                            </button>
+                            <br>
+                            <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="">Delete from Saved</button>
+                            </button>
+                            </td>
+                            </tr>
+                            </tbody>
+                            <button type="button" class="del" data-dismiss="recipient-name" aria-label="Delete Note">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="form-control-label">New Note:</label>
+                            <textarea class="form-control" id="message-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="save-note" type="submit" class="btn btn-primary">Save Note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Button trigger modal -->
+
+    <!-- Modal -->
+
+
+</main>
+<div class="container">
+    <footer>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>About TED</h3>
+                <p>TED is a nonpartisan nonprofit devoted to spreading ideas, usually in the form of short, powerful talks.
+                    TED began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers
+                    almost all topics — from science to business to global issues — in more than 110 languages. Meanwhile,
+                    independently run TEDx events help share ideas in communities around the world. Ted Talks:
+                    <a href="https://www.ted.com">https://www.ted.com</a>
+                </p>
+                </br>
+                </br>© 2018 Copyright Ted Talk Scraper
+                <a href="https://github.com/janetcushing">Janet Cushing</a>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+
+</html>
+
+</html>
