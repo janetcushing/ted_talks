@@ -1,0 +1,35 @@
+{
+  "name": "ted_talks",
+  "version": "1.0.0",
+  "description": "scrape and display ted talks",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janetcushing/ted_talks.git"
+  },
+  "author": "Janet Cushing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janetcushing/ted_talks/issues"
+  },
+  "homepage": "https://github.com/janetcushing/ted_talks#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "each-promise": "^1.0.5",
+    "express": "^4.16.2",
+    "express-handlebars": "^3.0.0",
+    "mongojs": "^2.4.1",
+    "mongoose": "^5.0.3",
+    "morgan": "^1.9.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "mockgoose": "^7.3.5"
+  }
+}

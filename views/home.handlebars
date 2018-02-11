@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="/assets/css/style.css">
+
+<main>
+    <div class="container">
+        <div class="jumbotron">
+            <nav>
+                <span>
+                    <h1>
+                        <a href="/">Ted Talk Scraper</a>
+                    </h1>
+                        <a href="/"><button id="homeBtn" class="btn btn-primary btn-lg">Home</button>
+                        </a>
+                        <a href="/saved"> <button id="savedBtn" class="btn btn-primary btn-lg">Saved Articles</button></a> 
+                    <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Scrape New Articles</button>
+                </span>
+            </nav>
+            <img src="/assets/images/ted-talks.png" width="90%">
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" id="article-list">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title/Link</th>
+                            <th>Speaker</th>
+                            <th>Classification</th>
+                            <th>Date Posted</th>
+                            <th>ID</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody {{#each scrapedArticles}}>
+                        <tr>
+                            <td>
+                                <a href="https://www.ted.com{{this.link}}">{{this.title}}</a>
+                            </td>
+                            <td>{{this.speaker}}</td>
+                            <td>{{this.classification}}</td>
+                            <td>{{this.date_posted}}</td>
+                            <td>{{this.id}}</td>
+                            <td>
+                                <button class="saveBtn btn btn-lg btn-success" type="submit" name="action" data-id="{{this.id}}">Save This Talk
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </div>
+
+</main>
+<div class="container">
+    <footer>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>About TED</h3>
+                <p>TED is a nonpartisan nonprofit devoted to spreading ideas, usually in the form of short, powerful talks.
+                    TED began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers
+                    almost all topics — from science to business to global issues — in more than 110 languages. Meanwhile,
+                    independently run TEDx events help share ideas in communities around the world. Ted Talks:
+                    <a href="https://www.ted.com">https://www.ted.com</a>
+                </p>¸
+                </br>
+                </br>© 2018 Copyright Ted Talk Scraper
+                <a href="https://github.com/janetcushing">Janet Cushing</a>
+            </div>
+        </div>
+    </footer>
+</div>
