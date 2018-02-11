@@ -1,27 +1,35 @@
-var express = require("express");
-var request = require("request");
-var cheerio = require("cheerio");
-var rp = require('request-promise');
-const eachPromise = require('each-promise')
-var mongojs = require("mongojs");
-var router = express.Router();
-var Articles = require("../models/articles.js");
 
-// var prevTitleObject = require("./controller/prevTitleObject");
+//=================================================
+// dependencies
+//=================================================
+const express = require("express");
+const request = require("request");
+const cheerio = require("cheerio");
+const mongojs = require("mongojs");
+const router = express.Router();
+const Articles = require("../models/articles.js");
+
+//=================================================
+// global variables
+//=================================================
 const prevlinks = [];
+
 //=================================================
 // Functions
 //=================================================
+
+//-----------------------------------------------------
+// load the collection into an array, so that when new
+// articles are scraped can check the array and make sure
+// we dont duplicate an article in the collection
+//-----------------------------------------------------
 function initializePreviouslinksArray() {
   prevlinks.length = 0;
   Articles.find({})
     .then(function (data) {
       data.forEach(function (element) {
         prevlinks.push(element.link);
-        console.log("element.link: " + element.link);
-        console.log("prevlinks: " + prevlinks[prevlinks.indexOf(element.link)]);
       });
-      console.log(`Previouslinks ${prevlinks.toString()}`);
     }).catch(function (error) {
       // Throw any errors to the console
       console.log("DB Error from initializePreviouslinksArray")
@@ -29,60 +37,43 @@ function initializePreviouslinksArray() {
     });
 }
 
+//-----------------------------------------------------
+// check to see if an article already exists in the
+// collection so that we dont insert it into the 
+// collection more than one time 
+//-----------------------------------------------------
 function searchForPreviousInserts(link) {
   Articles.find().where('link').equals(link)
     .then(function (data) {
-      console.log("DATA");
-      console.log(data);
       return true;
     }).catch(function (error) {
       // Throw any errors to the console
-      console.log("DB Error from searchForPreviousInserts")
+      console.log(`DB Error from searchForPreviousInserts`)
       console.log(error);
     });
 }
 
 
+//-----------------------------------------------------
+// bulk insert the newly scraped articles into the
+// collection
+//-----------------------------------------------------
 function insertNewArticles(currentArticles, res) {
-  console.log("im in insertNewArticles");
-  console.log("dumping currentArticles and there should be multiple");
-  console.log(currentArticles);
   Articles.insertMany(currentArticles, function (err, data) {
     if (err) {
-      console.log("There was a DB error");
-      console.log(err);
+      console.log(`There was a DB error from insertNewArticles: ${err} `);
       res.status(500).end();
     } else {
-      console.log("inserted");
-      console.log(data);
       let result = data.length.toString();
-      console.log("RESULT" + result);
       res.send(result);
     }
   });
 }
 
-// function insertOneNewArticles(articleDetails, res) {
-//   console.log("im in insertOneNewArticles");
-//   console.log("dumping articleDetails ");
-//   console.log(articleDetails);
-//   Articles.insert(articleDetails)
-//     .then(function (err, data) {
-//       console.log("inserted");
-//       // console.log("inserted this many: " + data.insertedCount);
-//       console.log(data);
-//       // let result = data.length.toString();
-//       // console.log("RESULT" + result);
-//       // res.send(result);
-//       return true;
-//     }).catch(function (err, data) {
-//       console.log("There was a DB error - insertOneNewArticles");
-//       console.log(err);
-//       res.status(500).end();
-//     });
-// }
 
-
+//-----------------------------------------------------
+// update the saved field on the document
+//-----------------------------------------------------
 function updateSavedArticle(req, res) {
   console.log("im in updateSavedArticle");
   Articles.findByIdAndUpdate(req.params.id, {
@@ -93,36 +84,16 @@ function updateSavedArticle(req, res) {
     console.log(data);
     res.send("success");
   }).catch(function (err) {
-    console.log("There was a DB error - updateSavedArticle");
-    console.log(err);
+    console.log(`There was a DB error - updateSavedArticle: ${err}`);
     res.status(500).send("A Server Error Occurred");
   });
 }
 
-function displayNotesInModall(req, res) {
-  console.log("im in displayNotesInModal");
-  Articles.findById(req.params.id)
-    .then(function (data) {
-      console.log(data);
-      const notes = [];
-      for (let i = 0; i < data.notes.length; i++) {
-        console.log(data.notes[i]);
-        notes.push({
-          "note": data.notes[i]
-        });
-      }
-      console.log("outside of loop previousNotes:");
-      console.log(notes);
-      res.render("saved", {
-        "notes": notes
-      });
-    }).catch(function (err) {
-      console.log("There was a DB error - displayNotesInModal");
-      console.log(err);
-      res.status(500).send("Modal- A Server Error Occurred");
-    });
-}
 
+//-----------------------------------------------------
+// redisplay the notes in the modal after a note has
+// been added or deleted
+//-----------------------------------------------------
 function displayNotesInModal(req, res) {
   console.log("im in displayNotesInModal");
   Articles.findById(req.params.id)
@@ -135,15 +106,12 @@ function displayNotesInModal(req, res) {
           "note": data.notes[i]
         });
       }
-      console.log("outside of loop previousNotes:");
-      console.log(notes);
       res.render("saved", {
         "notes": notes
       });
     }).catch(function (err) {
-      console.log("There was a DB error - displayNotesInModal");
-      console.log(err);
-      res.status(500).send("Modal- A Server Error Occurred");
+      console.log(`There was a DB error - displayNotesInModal ${err}`);
+      res.status(500).send("A Server Error Occurred");
     });
 }
 
@@ -168,15 +136,11 @@ function addANote(req, res) {
         "note": data.notes[i]
       });
     }
-    console.log("notes:");
-    console.log(notes);
-    // res.status(200).send("Success");
     res.render("saved", {
       notes: notes
     });
   }).catch(function (err) {
-    console.log("There was a DB error - addANote");
-    console.log(err);
+    console.log(`There was a DB error - addANote: ${err}`);
     res.status(500).send("A Server Error Occurred");
   });
 }
@@ -192,85 +156,25 @@ function deleteANote(req, res) {
     new: true,
     multi: false
   }).then(function (data) {
-    console.log("data:");
-    console.log(data);
     res.render("saved", {
       notes: data.notes
     });
   }).catch(function (err) {
-    console.log("There was a DB error - deleteANote");
-    console.log(err);
+    console.log(`There was a DB error - deleteANote: ${err}`);
     res.status(500).send("A Server Error Occurred");
   });
 }
 
 
-// function addANote(req, res) {
-// console.log("im in addANote");
-// console.log('req.body and req.params:');
-// // console.log("im about to update");
-// // console.log(req.body);
-// // console.log(req.params);
-
-// Articles.findByIdAndUpdate(req.params.id, 
-//   { $addToSet: { notes: '<value1>' }, 
-//  Articles.update(
-//    {_id: req.params.id}, 
-// {$addToSet: {notes: [req.body.note]}
-// Articles.update({
-//     "_id": req.params.id
-//   }, {
-//     push: {
-//       "note": "note"
-//     }
-//   }, {
-//     validateBeforeSave: false,
-//     upsert: false
-//   },
-//   function (err, model) {
-//     console.log(model);
-//     console.log(err);
-//   }
-// );
-// }
-// }).then(function (data) {
-//   console.log(data);
-//   res.send("success");
-// }).catch(function (err) {
-//   console.log("There was a DB error - addANote");
-//   console.log(err);
-//   res.status(500).send("A Server Error Occurred");
-// });
-
-
-// function createNewSavedArticle(req, res) {
-//   console.log("im in createNewSavedArticle");
-//   SavedArticles.$push({
-//     articleId: req.body.id,
-//     title: req.body.title,
-//     link: req.body.link,
-//     speaker: req.body.speaker,
-//     date_posted: req.body.date_posted,
-//     classification: req.body.classification
-//   }), (function (error, data) {
-//     if (data) {
-//       console.log(data);
-//       res.status(200).end();
-//     } else if (err) {
-//       // If an error occurred, send a generic server failure
-//       console.log("There was a DB error");
-//       console.log(err);
-//       res.status(500).send("A Server Error Occurred");
-//     }
-//   });
-// }
-
+//-----------------------------------------------------
+// retrieve the previously scraped articles from the
+// Article collection to populate the home page
+//-----------------------------------------------------
 function getPreviouslyScrapedArticles(req, res) {
   Articles.find().where('saved').equals(false)
     .then(function (data) {
       const scrapedArticles = [];
       data.forEach(function (element) {
-        // previousTitles.push(element.title);
         scrapedArticles.push({
           id: element._id,
           title: element.title,
@@ -284,27 +188,29 @@ function getPreviouslyScrapedArticles(req, res) {
       res.render("home", {
         scrapedArticles
       });
-    }).catch(function (error) {
+    }).catch(function (err) {
       // Throw any errors to the console
-      console.log("DB Error from getPreviouslyScrapedArticles")
-      console.log(error);
+      console.log(`DB Error from getPreviouslyScrapedArticlesc; ${err}`);
     });
 }
 
+//-----------------------------------------------------
+// retrieve the previously scraped articles from the
+// Article collection to populate the saved article page
+//-----------------------------------------------------
 function getSavedArticles(req, res) {
   console.log("IM IN getSavedArticles");
   Articles.find().where('saved').equals(true)
     .then(function (savedArticles) {
-      console.log("DATA GOT RETURNED FROM GETSAVEDArTICLES");
-      console.log(savedArticles);
       res.render("saved", {
         "savedArticles": savedArticles
       })
     }).catch(function (err) {
-      console.log("DB Error from getSavedArticles")
-      console.log(err);
+      console.log(`DB Error from getSavedArticles: ${err}`);
     });
 }
+
+
 
 //==============
 // ROUTES
@@ -322,7 +228,6 @@ router.get("/", function (req, res) {
 // saved route brings up the saved articles page
 //----------------------------------------------
 router.get("/saved", function (req, res) {
-  console.log("IM ON THE SERVER SIDE FOR SAVED");
   getSavedArticles(req, res);
 });
 
@@ -343,22 +248,13 @@ router.put("/api/saved/:id", function (req, res) {
 // the modal.handlebars
 //----------------------------------------------
 router.get("/api/prevnotes/:id", function (req, res) {
-  console.log("IM ON THE SERVER SIDE FOR MODAL");
   displayNotesInModal(req, res);
 });
 
 
-//----------------------------------------------
-// Route to populate the previous notes  
-// in the modal on the saved page
-//----------------------------------------------
-router.get("/api/prevnotes2/:id", function (req, res) {
-  displayNotesInModall(req, res);
-});
-
-router.get("/notes", function (req, res) {
-  displayNotesInModall(req, res);
-});
+// router.get("/notes", function (req, res) {
+//   displayNotesInModall(req, res);
+// });
 
 //----------------------------------------------
 // Route to update the  saved article with a new  
@@ -369,28 +265,27 @@ router.put("/api/note/:id", function (req, res) {
 });
 
 //----------------------------------------------
-// delete a previously saved notes to display in 
-// the modal.handlebars
+// Route to delete a previously saved note 
 //----------------------------------------------
 router.put("/api/deletenote/:id", function (req, res) {
   deleteANote(req, res);
 });
 
 
+//----------------------------------------------
+// Route to scrape new articles 
+//----------------------------------------------
 router.get("/scrape", function (req, res) {
   request("https://www.ted.com/talks", function (error, response, html) {
     // Load the html body from request into cheerio
-
     const $ = cheerio.load(html);
     const currentArticles = [];
     let counter = 0;
     console.log("counter1 " + counter);
     // For each element with a "media__message" class
     $(".media__message").each((i, element) => {
-      console.log("Im in media message");
       let articleDetails = {
         title: $(element).children().children("a").text(),
-        // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
         link: $(element).children().children("a").attr("href"),
         speaker: $(element).children(".talk-link__speaker").text(),
         date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
@@ -398,9 +293,8 @@ router.get("/scrape", function (req, res) {
         saved: false
       }
       if (prevlinks.includes(articleDetails.link.toString())) {
-        console.log("prevlinks includes link")
+        console.log(`this article has already been scraped`)
       } else {
-        console.log("prevlinks doesnt includes link")
         currentArticles.push(articleDetails);
         prevlinks.push(articleDetails.link);
         counter++;
@@ -408,8 +302,6 @@ router.get("/scrape", function (req, res) {
       // returns 20 Ted Talks   
       return counter < 2;
     });
-    console.log("dumping CURRENTARTICLES");
-    console.log(currentArticles);
     insertNewArticles(currentArticles, res);
   });
 });

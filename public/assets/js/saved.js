@@ -1,61 +1,77 @@
+//=================================================
+// Global Variables
+//=================================================
+var thisId = "";
 
-function displayNotesModal(thisId, modal){
+
+
+//=================================================
+// Functions
+//=================================================
+//--------------------------------------------------------------
+// reload the modal after a note is added or delete  
+//--------------------------------------------------------------
+function displayNotesModal(thisId, modal) {
     console.log("im in displayNotesModal");
-        // var button = $(event.relatedTarget) // Button that triggered the mod
-        console.log(`thisId ${thisId}`);
-        console.log("this id is " + thisId);
-        $.ajax({
-            type: "GET",
-            url: "/api/prevnotes/" + thisId
-        }).then(
-            function (notes) {
-                console.log(notes)
-                modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
-            });
-        // modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
+    // var button = $(event.relatedTarget) // Button that triggered the mod
+    console.log(`thisId ${thisId}`);
+    $.ajax({
+        type: "GET",
+        url: "/api/prevnotes/" + thisId
+    }).then(
+        function (notes) {
+            console.log(notes)
+            modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
+        });
 }
+
+
+
 //=================================================
 // On Page Load
 //=================================================
 $(document).ready(function () {
 
-    var thisId = "";
+    // ========================================================================
+    // When the 'delete from saved' button is clicked, the 'saved' boolean field on the document
+    // in the database is set to 'false', and then the document is moved from
+    // being displayed on the saved page to being displayed on the home page
+    // ========================================================================
+    $(document).on('click', '.deleteBtn', function (event) {
+        event.preventDefault();
+        console.log("i clicked the delete button");
+        let thisId = $(this).attr("data-id");
+        //  Send the POST request.
+        $.ajax({
+            type: "PUT",
+            url: "/api/saved/" + thisId,
+            data: {
+                "id": thisId,
+                "saved": false
+            }
+        }).then(function (res) {
+            console.log("i'm back from the server side");
+            console.log(res);
+            location.reload();
+        });
+    });
 
-    // function getTheNotes(thisId) {
-    //     var modal = $(this);
-    //     thisId = button.data('id');
-    //     // ajax to get the previous notes goes here
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "/api/prevnotes/" + thisId
-    //     }).then(
-    //         function (notes) {
-    //             console.log(notes)
-    //             modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
-    //         });
-    // }
-
-
+    //--------------------------------------------------------------
+    // display the modal when the 'add a note' button is clicked
+    //--------------------------------------------------------------- 
     $('#exampleModal').on('show.bs.modal', function (event) {
         var modal = $(this);
         console.log("i clicked the button to show the modal");
         var button = $(event.relatedTarget) // Button that triggered the modal
-        // var recipient = button.data('whatever') // Extract info from data-* attributes
         thisId = button.data('id');
         console.log("this id is " + thisId);
-       
-
-        // ajax to get the previous notes goes here
-        // $.ajax({
-        //     type: "GET",
-        //     url: "/api/prevnotes/" + thisId
-        // }).then(
-        //     function (notes) {
-        //         console.log(notes)
         modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
-        // });
     });
 
+    //--------------------------------------------------------------
+    // save the new note to the databasse when the save note button
+    // is clicked
+    //--------------------------------------------------------------
     $('#exampleModal').on('click', '#save-note', function (event) {
         console.log("i clicked the save-note button");
         var modal = $(this);
@@ -75,39 +91,36 @@ $(document).ready(function () {
                 function (notes) {
                     console.log(notes);
                     displayNotesModal(thisId, modal);
-                    // $(this).find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
+                    location.reload();
                 });
         } else {
             $('#message-text').attr("placeholder", "* You must enter a note or click the close button");
         }
     });
 
+    //--------------------------------------------------------------
+    // delete the note from the database when the delete note button
+    // is clicked
+    //--------------------------------------------------------------
     $('#exampleModal').on('click', '#delete-note', function (event) {
         console.log("i clicked the delete-note button");
-        // Make sure to preventDefault on a submit event. 
         event.preventDefault();
         var modal = $(this);
-        // var noteId = $(this).attr("data-id");
         var note = $(this).attr("data-whatever");
-        console.log("this note is " + note);
-        console.log(`this id is ${thisId}`);
-        // var articleId = '5a7e021e3607104b31139d05';
         deleteObj = {
             'articleId': thisId,
             'note': note
         };
         console.log(deleteObj);
-        //  Send the POST request.
+        //  Send the POST request
         $.ajax({
             type: "PUT",
             url: "/api/deletenote/" + thisId,
             data: deleteObj
         }).then(function (res) {
             console.log("i'm back from the server side");
-            console.log(res);
-            displayNotesModal(thisId, modal);
-            // $(this).find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
-            // location.reload();
+            displayNotesModal(thisId, modal)
+            location.reload();
         });
     });
 
