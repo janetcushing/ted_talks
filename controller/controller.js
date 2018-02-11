@@ -104,18 +104,17 @@ function displayNotesInModall(req, res) {
   Articles.findById(req.params.id)
     .then(function (data) {
       console.log(data);
-      const previousNotes = [];
+      const notes = [];
       for (let i = 0; i < data.notes.length; i++) {
         console.log(data.notes[i]);
-        previousNotes.push({
-          "noteId": i,
+        notes.push({
           "note": data.notes[i]
         });
       }
       console.log("outside of loop previousNotes:");
-      console.log(previousNotes);
-      res.render("notes", {
-        "prevNotes": previousNotes
+      console.log(notes);
+      res.render("saved", {
+        "notes": notes
       });
     }).catch(function (err) {
       console.log("There was a DB error - displayNotesInModal");
@@ -129,18 +128,17 @@ function displayNotesInModal(req, res) {
   Articles.findById(req.params.id)
     .then(function (data) {
       console.log(data);
-      const previousNotes = [];
+      const notes = [];
       for (let i = 0; i < data.notes.length; i++) {
         console.log(data.notes[i]);
-        previousNotes.push({
-          "noteId": i,
+        notes.push({
           "note": data.notes[i]
         });
       }
       console.log("outside of loop previousNotes:");
-      console.log(previousNotes);
-      res.render("notes", {
-        "prevNotes": previousNotes
+      console.log(notes);
+      res.render("saved", {
+        "notes": notes
       });
     }).catch(function (err) {
       console.log("There was a DB error - displayNotesInModal");
@@ -163,18 +161,18 @@ function addANote(req, res) {
     new: true
   }).then(function (data) {
     console.log(data);
-    const prevNotes = [];
+    const notes = [];
     for (let i = 0; i < data.notes.length; i++) {
       console.log(data.notes[i]);
-      prevNotes.push({
-        "noteId": i,
+      notes.push({
         "note": data.notes[i]
       });
     }
-    console.log("prevNotes:");
-    console.log(prevNotes);
-    res.render("notes", {
-      prevNotes: prevNotes
+    console.log("notes:");
+    console.log(notes);
+    // res.status(200).send("Success");
+    res.render("saved", {
+      notes: notes
     });
   }).catch(function (err) {
     console.log("There was a DB error - addANote");
@@ -189,27 +187,16 @@ function addANote(req, res) {
 //-----------------------------------------------------------
 function deleteANote(req, res) {
   console.log("im in deleteANote");
-  // Articles.findByIdAndUpdate(req.body.ArticleId, (err, todo) => { 
-  //   (req.params.id, {
-  //     $pull: {
-  //     notes:  { $eq: req.body.note}
-  //   }
-  // }, 
-  //   { multi: false 
-  // }).then(function (data) {
   Articles.findByIdAndUpdate(req.params.id, {
-    $pull: {
-      notes: 'heres a nice note'
-    }
-  }, {
+    $pull: {"notes": req.body.note},
     new: true,
     multi: false
   }).then(function (data) {
     console.log("data:");
     console.log(data);
-    // res.render("modal", {
-    //   prevNotes: prevNotes
-    // });
+    res.render("saved", {
+      notes: data.notes
+    });
   }).catch(function (err) {
     console.log("There was a DB error - deleteANote");
     console.log(err);
