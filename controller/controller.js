@@ -319,7 +319,6 @@ function getSavedArticles(req, res) {
     });
 }
 
-
 //==============
 // ROUTES
 //==============
@@ -391,123 +390,6 @@ router.put("/api/deletenote/:id", function (req, res) {
 });
 
 
-
-
-
-
-
-
-// request("https://www.ted.com/talks", function (error, response, html) {
-//   // Load the html body from request into cheerio
-//   var $ = cheerio.load(html);
-//   // For each element with a "title" class
-//    const currentArticles = [];
-//     let counter = 0;
-//   $(".media__message").each(function (i, element) {
-//     console.log("Im in media message");
-//     // Save the text and href of each link enclosed in the current element
-//     var title = $(element).children().children("a").text();
-//     // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
-//     var link = $(element).children().children("a").attr("href");
-//     var speaker = $(element).children(".talk-link__speaker").text();
-//     var date_posted = $(element).children().children(".meta__item").children(".meta__val").text();
-//     var classification = $(element).children().children(".meta__row").children(".meta__val").text();
-//       Articles.findOne().where('title').equals(element.title)
-//         .then(function (error, data) {
-//           console.log("DATA");
-//           console.log(data);
-//          currentArticles.push(articleDetails);
-//             counter++;
-//          let articleDetails = {
-//               title: $(element).children().children("a").text(),
-//               // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
-//               link: $(element).children().children("a").attr("href"),
-//               speaker: $(element).children(".talk-link__speaker").text(),
-//               date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
-//               classification: $(element).children().children(".meta__row").children(".meta__val").text(),
-//               saved: false
-//             }
-//             currentArticles.push(articleDetails);
-//             counter++;
-//             if (counter == 5) {
-//               console.log("counter5 " + counter);
-//               insertNewArticles(currentArticles, res);
-//               return false;
-//             }
-
-//         }).catch(function (error, data) {
-//           // Throw any errors to the console
-//           console.log("DB Error from searchForPreviousInserts")
-//           console.log(error);
-//         });
-//     });
-//   });
-//         });
-//     }
-//     //returns 20 Ted Talks
-//     return i < 5;
-//   });
-// });
-
-
-// router.get("/scrape", function (req, res) {
-//   request("https://www.ted.com/talks", function (error, response, html) {
-//     // Load the html body from request into cheerio
-
-//     const $ = cheerio.load(html);
-//     const currentArticles = [];
-//     let counter = 0;
-//     console.log("counter1 " + counter);
-//     // For each element with a "media__message" class
-//     $(".media__message").each((i, element) => {
-//       console.log("Im in media message");
-//       console.log("counter2 " + counter);
-//       // console.log(element);
-//       var title1 = $(element).children().children("a").text();
-//       // let isRepeatTitle = searchForPreviousInserts(element.title);
-//       Articles.findOne().where('title').equals(title1)
-//         .then(function (error, found) {
-//           console.log("FOUND: " + JSON.stringify(found, null, 2));
-//           let continueLoop = true;
-//           if (!found) {
-//             // Save the text and href of each link enclosed in the current element
-//             let articleDetails = {
-//               title: $(element).children().children("a").text(),
-//               // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
-//               link: $(element).children().children("a").attr("href"),
-//               speaker: $(element).children(".talk-link__speaker").text(),
-//               date_posted: $(element).children().children(".meta__item").children(".meta__val").text(),
-//               classification: $(element).children().children(".meta__row").children(".meta__val").text(),
-//               saved: false
-//             }
-//             // insertOneNewArticles(articleDetails, res);
-//             counter++;
-//             console.log("counter3 " + counter);
-//             if (counter < 3) {
-//               currentArticles.push(articleDetails);
-//               // insertNewArticles(currentArticles, res);
-//             } else if (counter = 3) {
-//               currentArticles.push(articleDetails);
-//               insertNewArticles(currentArticles, res);
-//               continueLoop = false;
-//             } else if (counter > 3) {
-//               continueLoop = false;
-//             }
-//           } else { //if article is found
-//             console.log("article previously inserted: " + JSON.stringify(data));
-//           }
-//           return continueLoop;
-//           // console.log("counter6 " + counter);
-//           // insertNewArticles(currentArticles, res);
-//         }).catch(function (error, data) {
-//           // Throw any errors to the console
-//           console.log("DB Error from searchForPreviousInserts")
-//           console.log(error);
-//         });
-//     });
-//   });
-// });
-
 router.get("/scrape", function (req, res) {
   request("https://www.ted.com/talks", function (error, response, html) {
     // Load the html body from request into cheerio
@@ -519,8 +401,6 @@ router.get("/scrape", function (req, res) {
     // For each element with a "media__message" class
     $(".media__message").each((i, element) => {
       console.log("Im in media message");
-      console.log("counter2 " + counter);
-      // console.log(element);
       let articleDetails = {
         title: $(element).children().children("a").text(),
         // var link = "https://www.ted.com" + $(element).children().children("a").attr("href");
@@ -530,10 +410,6 @@ router.get("/scrape", function (req, res) {
         classification: $(element).children().children(".meta__row").children(".meta__val").text(),
         saved: false
       }
-      console.log("im about to do the if prevlinks");
-      console.log(`articleDetails.link  *${articleDetails.link}*`);
-      console.log(`prevlinks0 *${prevlinks[0]}*`);
-      console.log(`prevlinks1 *${prevlinks[1]}*`);
       if (prevlinks.includes(articleDetails.link.toString())) {
         console.log("prevlinks includes link")
       } else {
