@@ -300,7 +300,7 @@ router.get("/scrape", function (req, res) {
         counter++;
       }
       // returns 20 Ted Talks   
-      return counter < 2;
+      return counter < 20;
     });
     insertNewArticles(currentArticles, res);
   });
