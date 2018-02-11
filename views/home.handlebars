@@ -1,25 +1,30 @@
 <link rel="stylesheet" href="/assets/css/style.css">
 
+
+<div class="container">
+    <div class="jumbotron">
+        <nav>
+            <span>
+                <h1>
+                    <a href="/">Ted Talk Scraper</a>
+                </h1>
+                <a href="/">
+                    <button id="homeBtn" class="btn btn-primary btn-lg">Home</button>
+                </a>
+                <a href="/saved">
+                    <button id="savedBtn" class="btn btn-primary btn-lg">Saved Articles</button>
+                </a>
+                <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Scrape New Articles</button>
+            </span>
+        </nav>
+        <img src="/assets/images/ted-talks.png" width="90%">
+    </div>
+</div>
+
 <main>
     <div class="container">
-        <div class="jumbotron">
-            <nav>
-                <span>
-                    <h1>
-                        <a href="/">Ted Talk Scraper</a>
-                    </h1>
-                        <a href="/"><button id="homeBtn" class="btn btn-primary btn-lg">Home</button>
-                        </a>
-                        <a href="/saved"> <button id="savedBtn" class="btn btn-primary btn-lg">Saved Articles</button></a> 
-                    <button id="scrapeBtn" class="btn btn-primary btn-lg" type="submit" name="scrape">Scrape New Articles</button>
-                </span>
-            </nav>
-            <img src="/assets/images/ted-talks.png" width="90%">
-        </div>
-    </div>
-    <div class="container">
         <div class="row" id="article-list">
-            <div class="col-md-12">
+            <div class="col-sm-12">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -56,7 +61,7 @@
 <div class="container">
     <footer>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-12">
                 <h3>About TED</h3>
                 <p>TED is a nonpartisan nonprofit devoted to spreading ideas, usually in the form of short, powerful talks.
                     TED began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers
