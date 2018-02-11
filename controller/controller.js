@@ -205,8 +205,13 @@ function deleteANote(req, res) {
     new: true,
     multi: false
   }).then(function (data) {
+    console.log(data);
+
     console.log("data:");
     console.log(data);
+    // res.render("modal", {
+    //   prevNotes: prevNotes
+    // });
   }).catch(function (err) {
     console.log("There was a DB error - deleteANote");
     console.log(err);
