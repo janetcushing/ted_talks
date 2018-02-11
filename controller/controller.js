@@ -205,24 +205,11 @@ function deleteANote(req, res) {
     new: true,
     multi: false
   }).then(function (data) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    console.log("data:");
-    console.log(data);
-=======
-=======
->>>>>>> 8a3c33cd854ccff5e537272b942a2a95f6751beb
-    console.log(data);
-
     console.log("data:");
     console.log(data);
     // res.render("modal", {
     //   prevNotes: prevNotes
     // });
-<<<<<<< HEAD
->>>>>>> 019bf02d664ac363a06073dc2683dae70e92a330
-=======
->>>>>>> 8a3c33cd854ccff5e537272b942a2a95f6751beb
   }).catch(function (err) {
     console.log("There was a DB error - deleteANote");
     console.log(err);
