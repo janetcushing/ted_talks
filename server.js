@@ -1,5 +1,3 @@
-
-
 // Dependencies
 var express = require("express");
 var mongojs = require("mongojs");
@@ -43,9 +41,13 @@ var mongoose = require("mongoose");
 // Requiring the `Article` model for accessing the collection
 var Articles = require("./models/articles.js");
 
-  // mongoose connection
-  mongoose.Promise = Promise;
+// mongoose connection
+mongoose.Promise = Promise;
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
   mongoose.connect("mongodb://localhost/tedtalks", {});
+}
 
 var routes = require("./controller/controller.js");
 app.use("/", routes);
