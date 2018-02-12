@@ -39,11 +39,11 @@
                             <td>{{this.classification}}</td>
                             <td>{{this.date_posted}}</td>
                             <td>
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="notesModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                                <h5 class="modal-title" id="notesModalLabel"></h5>
                                             </div>
                                             <div>
                                                 <div class="modal-body">
@@ -53,7 +53,7 @@
                                                             <li>{{this}}</li>
                                                             <li>
                                                                 <button id="delete-note" class="deletenoteBtn btn btn-sm btn-secondary" type="submit" name="action" data-id="{{this}}" data-toggle="modal"
-                                                                    data-dismiss="modal" data-target="#exampleModal" data-whatever="{{this}}">Delete
+                                                                    data-dismiss="modal" data-target="#notesModal" data-whatever="{{this}}">Delete
                                                                 </button>
                                                             </li>
                                                         </span>
@@ -78,7 +78,7 @@
                             </td>
                             <td>
                                 <button class="addanoteBtn btn btn-lg btn-success" type="submit" name="action" data-id="{{this._id}}" data-toggle="modal"
-                                    data-target="#exampleModal">Add a Note
+                                    data-target="#notesModal">Add a Note
                                     <br>
                                     <button class="deleteBtn btn btn-lg btn-success" type="submit" name="action" data-id="{{this.id}}">Delete from Saved</button>
                                 </button>
