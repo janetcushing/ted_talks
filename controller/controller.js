@@ -95,7 +95,8 @@ function updateSavedArticle(req, res) {
 // been added or deleted
 //-----------------------------------------------------
 function displayNotesInModal(req, res) {
-  console.log("im in displayNotesInModal");
+  console.log("im in displayNotesInModal on the server side");
+  console.log(req.params.id);
   Articles.findById(req.params.id)
     .then(function (data) {
       console.log(data);
@@ -202,6 +203,7 @@ function getSavedArticles(req, res) {
   console.log("IM IN getSavedArticles");
   Articles.find().where('saved').equals(true)
     .then(function (savedArticles) {
+      console.log(savedArticles);
       res.render("saved", {
         "savedArticles": savedArticles
       })
@@ -248,13 +250,12 @@ router.put("/api/saved/:id", function (req, res) {
 // the modal.handlebars
 //----------------------------------------------
 router.get("/api/prevnotes/:id", function (req, res) {
+  console.log("in on hte server side /api/prevnotes/:id");
+  console.log(req.params);
+  console.log(req.body);
   displayNotesInModal(req, res);
 });
 
-
-// router.get("/notes", function (req, res) {
-//   displayNotesInModall(req, res);
-// });
 
 //----------------------------------------------
 // Route to update the  saved article with a new  

@@ -3,8 +3,6 @@
 //=================================================
 var thisId = "";
 
-
-
 //=================================================
 // Functions
 //=================================================
@@ -12,7 +10,7 @@ var thisId = "";
 // reload the modal after a note is added or delete  
 //--------------------------------------------------------------
 function displayNotesModal(thisId, modal) {
-    console.log("im in displayNotesModal");
+    console.log("im in displayNotesModal on the client side");
     // var button = $(event.relatedTarget) // Button that triggered the mod
     console.log(`thisId ${thisId}`);
     $.ajax({
@@ -22,6 +20,7 @@ function displayNotesModal(thisId, modal) {
         function (notes) {
             console.log(notes)
             modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
+            modal.find('.modal-body').text(notes);
         });
 }
 
@@ -59,20 +58,22 @@ $(document).ready(function () {
     //--------------------------------------------------------------
     // display the modal when the 'add a note' button is clicked
     //--------------------------------------------------------------- 
-    $('#exampleModal').on('show.bs.modal', function (event) {
+    $('#notesModal').on('show.bs.modal', function (event) {
+        console.log("I clicked the add a note button");
         var modal = $(this);
+        console.log(modal);
         console.log("i clicked the button to show the modal");
         var button = $(event.relatedTarget) // Button that triggered the modal
         thisId = button.data('id');
         console.log("this id is " + thisId);
-        modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
+        // modal.find('.modal-title').text(`Notes for Ted Talk  ${thisId}`);
     });
 
     //--------------------------------------------------------------
     // save the new note to the databasse when the save note button
     // is clicked
     //--------------------------------------------------------------
-    $('#exampleModal').on('click', '#save-note', function (event) {
+    $('#notesModal').on('click', '#save-note', function (event) {
         console.log("i clicked the save-note button");
         var modal = $(this);
         var note = $('#message-text').val().trim();
@@ -102,7 +103,7 @@ $(document).ready(function () {
     // delete the note from the database when the delete note button
     // is clicked
     //--------------------------------------------------------------
-    $('#exampleModal').on('click', '#delete-note', function (event) {
+    $('#notesModal').on('click', '#delete-note', function (event) {
         console.log("i clicked the delete-note button");
         event.preventDefault();
         var modal = $(this);
